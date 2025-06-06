@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <title>Krajina Zázrakov – Hod kockou</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Georgia', serif;
+
+      background-image: url('Crazy.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* === HLAVNÝ KONTAJNER === */
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+      text-align: center;
+    }
+
+    /* === HLAVNÝ NADPIS === */
+    h1 {
+      font-size: 4rem; /* 👈 Tu môžeš zmeniť veľkosť názvu */
+      color: #fff;
+      text-shadow: 2px 2px 5px #000;
+      font-family: "Comic Sans MS", "Comic Sans", cursive;
+      margin-top: 30px; /* 👈 Tu môžeš upraviť vzdialenosť od vrchu */
+    }
+
+    /* === VÝSLEDOK HODU (STRED STRÁNKY) === */
+    #result {
+  font-size: 10rem;
+  color: #ffffff;
+  text-shadow: 3px 3px 6px #000;
+
+  position: absolute;
+  top: 48%;
+  left: 55%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+
+  transition: all 0.5s ease;
+}
+
+#result.show {
+  opacity: 1;
+  /* Ak chceš animovaný pohyb, môžeš napr. použiť: */
+  /* transform: translate(-50%, -60%); */
+}
+
+    /* === TLAČIDLO === */
+    .button-container {
+      /* 👇 TU MÔŽEŠ UPRAVIŤ POZÍCIU TLAČIDLA */
+      margin-bottom: 40px;      /* vzdialenosť od spodku */
+      text-align: center;
+
+      /* Horizontálna pozícia: */
+      /* text-align: left;    // pre vľavo */
+      /* text-align: right;   // pre vpravo */
+      /* text-align: center;  // na stred */
+    }
+
+    button {
+      font-size: 3rem;
+      padding: 12px 24px;
+
+      background-color: rgba(255, 255, 255, 0.8);
+      color: #4c0070;
+      border: 3px solid #4c0070;
+      border-radius: 10px;
+
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background-color: rgba(255, 255, 255, 1);
+    }
+    /* === SKRYTÝ ADMIN BUTTON === */
+    #secret-button {
+      position: absolute;
+      top: 5px;  /* 👈 tu si môžeš zmeniť pozíciu */
+      left: 5px;
+      width: 20px;
+      height: 20px;
+      background: black;
+      border: none;
+      opacity: 0.05; /* 👈 takmer neviditeľné */
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    /* === ADMIN SEKCIA === */
+    #admin-panel {
+      display: none;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.95);
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      font-size: 1rem;
+      font-family: monospace;
+    }
+
+    .back-button {
+      margin-top: 20px;
+      padding: 8px 16px;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- 🎩 SKRYTÝ BUTTON PRE VEDÚCICH -->
+  <button id="secret-button" onclick="toggleAdmin()">.</button>
+
+  <!-- 🌀 HLAVNÁ HRA -->
+  <div class="container" id="main-view">
+    <h1>Nechaj šialenstvo rozhodnúť</h1>
+    <div id="result"></div>
+    <div class="button-container">
+      <button onclick="rollDice()">Vpadnúť do zajačej nory</button>
+    </div>
+  </div>
+
+  <!-- 🔧 ADMIN PANEL PRE NASTAVENIE ČÍSEL -->
+  <div id="admin-panel">
+    <h2>🎲 Upraviť nastavené hody</h2>
+    <p>Zadaj čísla oddelené čiarkou (napr. 6,2,5):</p>
+    <textarea id="admin-input">6,2,5</textarea><br>
+    <button onclick="applyPreset()">💾 Uložiť čísla</button>
+    <button class="back-button" onclick="toggleAdmin()">⬅️ Naspäť do hry</button>
+  </div>
+
+  <script>
+    let presetRolls = [6, 2, 5]; // Prednastavené hodnoty
+    let currentIndex = 0;
+
+    function rollDice() {
+      const resultEl = document.getElementById("result");
+
+      if (currentIndex >= presetRolls.length) {
+        resultEl.innerText = "✨";
+        resultEl.classList.add("show");
+        return;
+      }
+
+      const roll = presetRolls[currentIndex];
+      currentIndex++;
+
+      resultEl.classList.remove("show");
+      void resultEl.offsetWidth;
+      resultEl.innerText = roll;
+
+      setTimeout(() => {
+        resultEl.classList.add("show");
+      }, 100);
+    }
+
+    function toggleAdmin() {
+      const game = document.getElementById("main-view");
+      const admin = document.getElementById("admin-panel");
+
+      if (admin.style.display === "none") {
+        admin.style.display = "block";
+        game.style.display = "none";
+
+        // Vlož aktuálne hodnoty do textarea
+        document.getElementById("admin-input").value = presetRolls.join(",");
+      } else {
+        admin.style.display = "none";
+        game.style.display = "flex";
+      }
+    }
+
+    function applyPreset() {
+      const input = document.getElementById("admin-input").value;
+      const values = input.split(',').map(num => parseInt(num.trim())).filter(n => !isNaN(n));
+      if (values.length > 0) {
+        presetRolls = values;
+        currentIndex = 0;
+        alert("Čísla boli uložené.");
+      } else {
+        alert("Zadaj aspoň jedno platné číslo.");
+      }
+    }
+  </script>
+</body>
+</html>
