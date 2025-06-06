@@ -147,57 +147,70 @@
   </div>
 
   <script>
-    let presetRolls = [6, 2, 5]; // Prednastavené hodnoty
-    let currentIndex = 0;
+  let presetRolls = [6, 2, 5];
+  let currentIndex = 0;
 
-    function rollDice() {
-      const resultEl = document.getElementById("result");
-
-      if (currentIndex >= presetRolls.length) {
-        resultEl.innerText = "✨";
-        resultEl.classList.add("show");
-        return;
-      }
-
-      const roll = presetRolls[currentIndex];
-      currentIndex++;
-
-      resultEl.classList.remove("show");
-      void resultEl.offsetWidth;
-      resultEl.innerText = roll;
-
-      setTimeout(() => {
-        resultEl.classList.add("show");
-      }, 100);
-    }
-
-    function toggleAdmin() {
-      const game = document.getElementById("main-view");
-      const admin = document.getElementById("admin-panel");
-
-      if (admin.style.display === "none") {
-        admin.style.display = "block";
-        game.style.display = "none";
-
-        // Vlož aktuálne hodnoty do textarea
-        document.getElementById("admin-input").value = presetRolls.join(",");
-      } else {
-        admin.style.display = "none";
-        game.style.display = "flex";
+  // === Po načítaní stránky skús načítať zo storage
+  window.onload = function () {
+    const stored = localStorage.getItem("aliceRolls");
+    if (stored) {
+      const parsed = stored.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+      if (parsed.length > 0) {
+        presetRolls = parsed;
       }
     }
+  }
 
-    function applyPreset() {
-      const input = document.getElementById("admin-input").value;
-      const values = input.split(',').map(num => parseInt(num.trim())).filter(n => !isNaN(n));
-      if (values.length > 0) {
-        presetRolls = values;
-        currentIndex = 0;
-        alert("Čísla boli uložené.");
-      } else {
-        alert("Zadaj aspoň jedno platné číslo.");
-      }
+  function rollDice() {
+    const resultEl = document.getElementById("result");
+
+    if (currentIndex >= presetRolls.length) {
+      resultEl.innerText = "✨";
+      resultEl.classList.add("show");
+      return;
     }
-  </script>
+
+    const roll = presetRolls[currentIndex];
+    currentIndex++;
+
+    resultEl.classList.remove("show");
+    void resultEl.offsetWidth;
+    resultEl.innerText = roll;
+
+    setTimeout(() => {
+      resultEl.classList.add("show");
+    }, 100);
+  }
+
+  function toggleAdmin() {
+    const game = document.getElementById("main-view");
+    const admin = document.getElementById("admin-panel");
+
+    if (admin.style.display === "none") {
+      admin.style.display = "block";
+      game.style.display = "none";
+      document.getElementById("admin-input").value = presetRolls.join(",");
+    } else {
+      admin.style.display = "none";
+      game.style.display = "flex";
+    }
+  }
+
+  function applyPreset() {
+    const input = document.getElementById("admin-input").value;
+    const values = input.split(',').map(num => parseInt(num.trim())).filter(n => !isNaN(n));
+    if (values.length > 0) {
+      presetRolls = values;
+      currentIndex = 0;
+
+      // === Ulož do localStorage
+      localStorage.setItem("aliceRolls", presetRolls.join(','));
+
+      alert("Čísla boli uložené.");
+    } else {
+      alert("Zadaj aspoň jedno platné číslo.");
+    }
+  }
+</script>
 </body>
 </html>
