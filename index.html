@@ -2,6 +2,7 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Krajina Zázrakov – Hod kockou</title>
   <style>
     body {
@@ -122,6 +123,65 @@
       padding: 8px 16px;
       font-size: 1rem;
     }
+
+    @media (max-width: 768px) {
+  h1 {
+    font-size: 2.5rem;         /* menší nadpis */
+    margin-top: 20px;
+  }
+
+  #result {
+    font-size: 6rem;           /* menšie číslo */
+    top: 50%;
+    left: 50%;
+  }
+
+  button {
+    font-size: 1.5rem;         /* menšie tlačidlá */
+    padding: 10px 20px;
+  }
+
+  .button-container {
+    margin-bottom: 30px;
+  }
+
+  #secret-button {
+    width: 15px;
+    height: 15px;
+    top: 10px;
+    left: 10px;
+  }
+
+  textarea {
+    font-size: 0.9rem;
+    height: 80px;
+  }
+
+  .back-button {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  #result {
+    font-size: 4.5rem;
+  }
+
+  button {
+    font-size: 1.2rem;
+    padding: 8px 16px;
+  }
+
+  textarea {
+    height: 70px;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -130,7 +190,7 @@
 
   <!-- 🌀 HLAVNÁ HRA -->
   <div class="container" id="main-view">
-    <h1>Nechaj náhodu rozhodnúť</h1>
+    <h1>Nechaj šialenstvo rozhodnúť</h1>
     <div id="result"></div>
     <div class="button-container">
       <button onclick="rollDice()">Vpadnúť do zajačej nory</button>
